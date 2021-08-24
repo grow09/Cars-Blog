@@ -1,0 +1,15 @@
+{% extends 'main/index.html' %}
+
+{% block content %}
+<H1>{{ title }}</H1>
+
+<ul>
+    {% for p in posts %}
+    <li>
+        <h2> {{ p.title }} </h2>
+        <p> {{ p.content }} </p>
+        <hr>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
