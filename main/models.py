@@ -4,8 +4,8 @@ from django.urls import reverse
 # Create your models here.
 
 
-class Cars(models.Model):
-    title = models.CharField(max_length=255)
+class Car(models.Model):
+    title = models.CharField(max_length=255, verbose_name='Title')
     content = models.TextField(blank=True)
     photo = models.ImageField(blank=True, upload_to='photos/%Y/%m/%d/')
     time_create = models.DateTimeField(auto_now_add=True)
@@ -18,6 +18,11 @@ class Cars(models.Model):
 
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_id': self.pk})
+
+    class Meta:
+        verbose_name = 'Car'
+        verbose_name_plural = 'Cars'
+        ordering = ['-time_create', 'title']
 
 
 class Category(models.Model):

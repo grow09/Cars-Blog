@@ -15,7 +15,7 @@ main_menu = [{'title': 'About', 'url_name': 'about'},
 
 
 def index(request):
-    posts = Cars.objects.all()
+    posts = Car.objects.all()
     cats = Category.objects.all()
     context = {'posts': posts,
                'cats': cats,
@@ -28,7 +28,7 @@ def index(request):
 
 
 def show_category(request, cat_id):
-    posts = Cars.objects.filter(cat_id=cat_id)
+    posts = Car.objects.filter(cat_id=cat_id)
     cats = Category.objects.all()
 
     if cat_id > len(cats) or cat_id == 0:
