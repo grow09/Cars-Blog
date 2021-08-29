@@ -16,9 +16,7 @@ main_menu = [{'title': 'About', 'url_name': 'about'},
 
 def index(request):
     posts = Car.objects.all()
-    cats = Category.objects.all()
     context = {'posts': posts,
-               'cats': cats,
                'main_menu': main_menu,
                'title': 'Main',
                'cat_selected': 0
