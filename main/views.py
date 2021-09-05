@@ -1,8 +1,9 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from datetime import datetime
-from django.shortcuts import redirect
+
 from .models import *
+from .forms import *
 
 
 # Create your views here.
@@ -25,25 +26,28 @@ def index(request):
     return render(request, 'main/main.html', context=context)
 
 
-def show_category(request, cat_id):
-    posts = Car.objects.filter(cat_id=cat_id)
-    cats = Category.objects.all()
+def show_category(request, cat_slug):
 
-    if cat_id > len(cats) or cat_id == 0:
+    if cat_slug not in Category.objects.all().values_list('slug', flat=True):
         raise Http404()
+
+    cat_selected = Category.objects.filter(slug=cat_slug).values_list('pk', flat=True)[0]
+    cat_name = Category.objects.filter(slug=cat_slug).values_list('name', flat=True)[0]
+    cats = Category.objects.all()
+    posts = Car.objects.filter(cat_id=cat_selected)
 
     context = {'posts': posts,
                'cats': cats,
                'main_menu': main_menu,
-               'title': cats[cat_id-1],
-               'cat_selected': cat_id,
+               'title': cat_name,
+               'cat_selected': cat_selected,
                }
 
     return render(request, 'main/main.html', context=context)
 
 
-def show_post(request, post_id):
-    post = get_object_or_404(Car, pk=post_id)
+def show_post(request, post_slug):
+    post = get_object_or_404(Car, slug=post_slug)
 
     context = {
         'post': post,
@@ -60,7 +64,14 @@ def about(request):
 
 
 def addpage(request):
-    return HttpResponse('Add article')
+    if request.method == "POST":
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+    else:
+        form = AddPostForm()
+
+    return render(request, 'main/addpage.html', {'form': form, 'main_menu': main_menu, 'title': 'Add article'})
 
 
 def contact(request):
