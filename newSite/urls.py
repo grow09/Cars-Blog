@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from main.views import index, pageNotFound
+from main.views import pageNotFound
 from django.urls import path, include
 
 urlpatterns = [
