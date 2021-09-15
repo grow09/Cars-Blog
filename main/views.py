@@ -3,20 +3,22 @@ from django.shortcuts import render, get_object_or_404, redirect
 from datetime import datetime
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import *
 from .forms import *
-
+from .utils import *
 
 # Create your views here.
 
-main_menu = [{'title': 'About', 'url_name': 'about'},
-            {'title': 'Add article', 'url_name': 'add_page'},
-            {'title': 'Contacts', 'url_name': 'contact'},
-            {'title': 'Login', 'url_name': 'login'}
-]
+# main_menu = [{'title': 'About', 'url_name': 'about'},
+#             {'title': 'Add article', 'url_name': 'add_page'},
+#             {'title': 'Contacts', 'url_name': 'contact'},
+#             {'title': 'Login', 'url_name': 'login'}
+# ]
 
-class Home(ListView):
+
+class Home(DataMixin, ListView):
     model = Car
     template_name = 'main/main.html'
     context_object_name = 'posts'
@@ -24,10 +26,12 @@ class Home(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['main_menu'] = main_menu
-        context['title'] = 'Home page'
-        context['cat_selected'] = 0
-        return context
+        # context['main_menu'] = main_menu
+        # context['title'] = 'Home page'
+        # context['cat_selected'] = 0
+        # определения контекста через миксин
+        c_def = self.get_user_context(title="Home page")
+        return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self):
         return Car.objects.filter(is_published=True)
@@ -43,7 +47,7 @@ class Home(ListView):
 #
 #     return render(request, 'main/main.html', context=context)
 
-class Category(ListView):
+class Category(DataMixin, ListView):
     model = Car
     template_name = 'main/main.html'
     context_object_name = 'posts'
@@ -51,10 +55,12 @@ class Category(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['main_menu'] = main_menu
-        context['title'] = 'Category - ' + str(context['posts'][0].cat)
-        context['cat_selected'] = context['posts'][0].cat_id
-        return context
+        # context['main_menu'] = main_menu
+        # context['title'] = 'Category - ' + str(context['posts'][0].cat)
+        # context['cat_selected'] = context['posts'][0].cat_id
+        c_def = self.get_user_context(title="Category - " + str(context['posts'][0].cat),
+                                      cat_selected=context['post'][0].cat_id)
+        return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self):
         return Car.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
@@ -79,7 +85,7 @@ class Category(ListView):
 #     return render(request, 'main/main.html', context=context)
 
 
-class Post(DetailView):
+class Post(DataMixin, DetailView):
     model = Car
     template_name = 'main/post.html'
     slug_url_kwarg = 'post_slug'
@@ -87,9 +93,10 @@ class Post(DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['main_menu'] = main_menu
-        context['title'] = context['post']
-        return context
+        # context['main_menu'] = main_menu
+        # context['title'] = context['post']
+        c_def = self.get_user_context(title=context['post'])
+        return dict(list(context.items()) + list(c_def.items()))
 
 # def show_post(request, post_slug):
 #     post = get_object_or_404(Car, slug=post_slug)
@@ -108,16 +115,18 @@ def about(request):
     return render(request, 'main/about.html', {'main_menu': main_menu, 'title': 'About'})
 
 
-class CreatePage(CreateView):
+class CreatePage(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddPostForm
     template_name = 'main/addpage.html'
     success_url = reverse_lazy('home')
+    login_url = reverse_lazy('home')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['main_menu'] = main_menu
-        context['title'] = 'Add new article'
-        return context
+        # context['main_menu'] = main_menu
+        # context['title'] = 'Add new article'
+        c_def = self.get_user_context(title="Add new post")
+        return dict(list(context.items()) + list(c_def.items()))
 
 # def addpage(request):
 #     if request.method == "POST":
