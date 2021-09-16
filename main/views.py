@@ -59,7 +59,7 @@ class Category(DataMixin, ListView):
         # context['title'] = 'Category - ' + str(context['posts'][0].cat)
         # context['cat_selected'] = context['posts'][0].cat_id
         c_def = self.get_user_context(title="Category - " + str(context['posts'][0].cat),
-                                      cat_selected=context['post'][0].cat_id)
+                                      cat_selected=context['posts'][0].cat_id)
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self):
