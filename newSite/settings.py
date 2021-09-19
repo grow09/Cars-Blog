@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-t0x39uz&2izs#m@x0ne=ma-43=w6m5a9a&5hagooic8wp*zzvt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+# ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
+    "psycopg2"
 ]
 
 MIDDLEWARE = [
@@ -76,10 +78,14 @@ WSGI_APPLICATION = 'newSite.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+ 'default': {
+     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+     'NAME': 'django_cars_docker',
+     'USER': 'admin1',
+     'PASSWORD': 'admin1',
+     'HOST': 'postgresdb',
+     'PORT': 5432
+ }
 }
 
 
