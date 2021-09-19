@@ -18,12 +18,10 @@
 			<ul id="mainmenu" class="mainmenu">
 			<a href="{% url 'home' %}"><li class="logo"><i class="fab fa-firefox fa-3x" style="color: white;"></i></li></a>
 {% for m in main_menu %}
-	{% if not forloop.last %}
+
 			<li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-	{% else %}
-			<li class="last"><a href="{% url m.url_name %}">{{m.title}}</a></li>
-	{% endif %}
 {% endfor %}
+				<li class="last"><a href="{% url 'register' %}">Registration</a> | <a href="{% url 'login' %}">Login</a></li>
 			</ul>
 			<div class="clear"></div>
 		</div>

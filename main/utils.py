@@ -5,7 +5,6 @@ from django.db.models import *
 main_menu = [{'title': 'About', 'url_name': 'about'},
             {'title': 'Add article', 'url_name': 'add_page'},
             {'title': 'Contacts', 'url_name': 'contact'},
-            {'title': 'Login', 'url_name': 'login'}
 ]
 
 
